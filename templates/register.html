@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Login - QuizMaster{% endblock title %}
+{% block body %}
+<div><h1 class = "text-center" style="color: #07567d;">Register</h1></div>
+<div class="container-fluid row justify-content-center">
+    <form class = "col-5" action="/register" method="POST">
+
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" name="email">
+        </div>
+
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Name</label>
+            <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" name = "username">
+        </div>
+
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Phone Number</label>
+            <input type="text" class="form-control" placeholder="Phone Number" aria-label="Phone Number" aria-describedby="basic-addon1" name = "phone_number">
+        </div>
+
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Password</label>
+            <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" name = "password">
+        </div>
+
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" placeholder="Confirm Password" aria-label="Confirm Password" aria-describedby="basic-addon1" name = "confirm_password">
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary">Register</button>
+            <a href="/login">Already have an account?</a>
+        </div>
+        
+    </form>
+</div>
+
+    
+{% endblock body %}

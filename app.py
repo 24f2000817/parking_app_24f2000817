@@ -1,5 +1,5 @@
-from flask import Flask
-from controllers.database import db, User, ParkingLot, ParkingSpot, Reservation
+from flask import Flask, render_template
+from controllers.database import *
 from controllers.config import config
 
 app = Flask(__name__)
@@ -21,8 +21,10 @@ with app.app_context():
     db.session.commit()
 
 @app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+def home():
+    return render_template("home.html")
+
+from controllers.authentication import *
 
 if __name__ == "__main__":
     app.run(debug=True)
