@@ -1,0 +1,20 @@
+.available {
+      background-color: #c6f7d0;
+      color: #006400;
+    }
+.occupied {
+      background-color: #f7c6c6;
+      color: #8b0000;
+    }
+
+.slot {
+      width: 40px;
+      height: 40px;
+      margin: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      border: 2px solid #007bff;
+      font-weight: bold;
+    }

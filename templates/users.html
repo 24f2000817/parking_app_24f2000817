@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Users - Vehicle Parking App{% endblock title %}
+{% block body %}
+<div>
+    <div class="card border-primary m-5">
+        <div class="card-body">
+            <h3 class="text-center" style="color:  #07567d;">Users </h3>
+            <hr style="border: 1px solid #000; width: 100%; margin: 20px auto;">
+            <table class="table table-hover" style="text-align: center;">
+                <thead >
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Frequency
+                </tr>
+                </thead>
+                <tbody>
+                {% for user,frequency in userdata if user.email != 'admin@gmail.com'%}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone_number }}</td>
+                    <td>{{ frequency }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock body %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}View Spot{% endblock title %}
+{% block body %}
+    <div><h1 class = "text-center" style="color: #07567d;">View Spot</h1></div>
+    <div class="container-fluid row justify-content-center">
+        <form class="col-5" action="{{url_for('view_spot', spot_id=spot.id)}}" method="POST">
+            <div class="mb-3">
+                <label for="spot_id" class="form-label">Spot Id</label>
+                <input type="text" class="form-control" id="spot_id" name="spot_id" value="{{ spot.id }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <a href="{{ url_for('view_spot_details', spot_id=spot.id) }}" class="form-control disabled" tabindex="-1">{{ spot.status }}</a>
+            </div>
+            <div class="mb-3">
+                <a class="btn btn-outline-danger m-1" href="{{url_for('delete_spot', spot_id=spot.id)}}" role="Delete">Delete</a>
+                <a class="btn btn-outline-primary m-1" href="#" role="Edit">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock body %}
+

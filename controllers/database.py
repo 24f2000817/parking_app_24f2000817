@@ -13,7 +13,7 @@ class User(db.Model):
     reservations = db.relationship('Reservation', backref='user', lazy=True)
 
 class ParkingLot(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     prime_location_name = db.Column(db.String(100), nullable=False)
     address = db.Column(db.String(200), nullable=False)
     pin_code = db.Column(db.String(10), nullable=False)
@@ -38,4 +38,4 @@ class Reservation(db.Model):
     parking_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     leaving_timestamp = db.Column(db.DateTime, nullable=True)
 
-    cost_per_hour = db.Column(db.Float, nullable=False)
+    cost = db.Column(db.Float, nullable=True)
