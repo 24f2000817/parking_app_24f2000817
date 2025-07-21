@@ -25,8 +25,8 @@
                     <td>{{ r.spot.lot.prime_location_name }}</td>
                     <td>{{ r.spot.id }}</td>
                     {% set duration = (r.leaving_timestamp - r.parking_timestamp).total_seconds() / 3600 if r.leaving_timestamp else 'N/A' %}
-                    <td>{{ "%.2f"|format(duration) if duration != 'N/A' else 'N/A' }}</td>
-                    <td>{{ "%.2f"|format(r.cost_per_hour * duration) if duration != 'N/A' else 'N/A' }}</td>
+                    <td>{{"%.2f"|format(duration) if duration != 'N/A' else 'N/A' }}</td>
+                    <td>{{"%.2f"|format(r.cost_per_hour * duration) if duration != 'N/A' else 'N/A'}}</td>
                 </tr>
                 {% endfor %}
                 </tbody>
