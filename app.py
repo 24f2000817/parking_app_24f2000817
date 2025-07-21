@@ -24,7 +24,17 @@ with app.app_context():
 def home():
     lots = ParkingLot.query.all()
     spots = ParkingSpot.query.all()
-    return render_template("home.html", lots = lots, spots = spots)
+    search = request.args.get('search', None)
+    search_type = request.args.get('search_type',None)
+    if search_type == 'location':
+        search_results = ParkingLot.query.filter_by( address = search ).all()
+    elif search_type == 'pincode':
+        search_results = ParkingLot.query.filter_by( pin_code = search ).all()
+    else:
+        search_results = ParkingLot.query.all()
+    reservations = Reservation.query.all()
+        
+    return render_template("home.html", lots = lots, spots = spots, search_results=search_results, reservations=reservations)
 
 from controllers.authentication import *
 from controllers.routes import *

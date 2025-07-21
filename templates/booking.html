@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Edit Lot - Vehicle Parking App{% endblock title %}
+{% block body %}
+    <div><h1 class = "text-center" style="color: #07567d;">Edit Lot</h1></div>
+    <div class="container-fluid row justify-content-center">
+        <form class="col-5" action="{{url_for('booking', lot_id=lot.id)}}" method="POST">
+            <div class="mb-3">
+                <label for="Spot ID" class="form-label">Spot ID</label>
+                <input type="text" class="form-control" id="spotId" name="spot_id" value="{{ spot.id }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="Lot ID" class="form-label">Lot ID</label>
+                <input type="text" class="form-control" id="lotId" name="lotId" value="{{ lot.id }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="User ID" class="form-label">User ID</label>
+                <input type="text" class="form-control" id="userId" name="user_id" value="{{ user_id }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="Vehicle Number" class="form-label">Vehicle Number</label>
+                <input type="text" class="form-control" id="vehicleNumber" name="vehicle_number" >
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">Reserve</button>
+                <button type="reset" class="btn btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+{% endblock body %}

@@ -1,3 +1,82 @@
 {% block body %}
     <h3 class="text-center" style="color: rgb(114, 162, 250);">Welcome to the User Dashboard</h3>
+    
+    <div>
+        <div class="card border-primary m-5">
+            <div class="card-body">
+                <h3 class="text-center" style="color: #07567d;">Parking History </h3>
+                <hr style="border: 1px solid #000; width: 100%; margin: 20px auto;">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Vehicle Number</th>
+                            <th scope="col">Parking Date</th>
+                            <th scope="col">Parking Time</th>
+                            <th scope="col">Leave Time</th>
+                            <th scope="col"> Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reservations %}
+                        <tr>
+                            <td>{{ reservation.id }}</td>
+                            <td>{{ reservation.spot.lot.prime_location_name }}</td>
+                            <td>{{ reservation.vehicle_number }}</td>
+                            <td>{{ reservation.parking_timestamp.strftime('%d %b %Y')}}</td>
+                            <td>{{ reservation.parking_timestamp.strftime('%H:%M:%S') }}</td>
+                            <td>{{ reservation.leaving_timestamp.strftime('%H:%M:%S') if reservation.leaving_timestamp else 'N/A' }}</td>
+                            <td>
+                                <a class="btn btn-outline-primary" href="{{ url_for('release',spot_id=reservation.spot.id) }}" role="button" > Release </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <hr style="border: 1px solid #000; width: 100%; margin: 20px auto;">
+<h3 class="text-center" style="color: rgb(114, 162, 250);">Search Parking Spot</h3>
+<form class = "d-flex" role="search" method="GET" action="{{ url_for('home') }}">
+    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+    <select class="form-select me-2" aria-label="Default select example" name="search_type">
+        <option selected>Select</option>
+        <option value="location">Location</option>
+        <option value="pincode">Pincode</option>
+    </select>
+    <input class="btn btn-outline-success" type="submit" value="Search">
+</form>
+
+<div>
+    <div class="card border-primary m-5">
+        <div class="card-body">
+            <h3 class="text-center" style="color: #07567d;">Parking History </h3>
+            <hr style="border: 1px solid #000; width: 100%; margin: 20px auto;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col"> Address </th>
+                        <th scope="col"> Availability </th>
+                        <th scope="col"> Action </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in search_results %}
+                    <tr>
+                        <td>{{ result.id }}</td>
+                        <td>{{ result.address }}</td>
+                        <td>{{ result.spots | selectattr('status', 'equalto', 'A') | list | length }}</td>
+                        <td>
+                            <a class="btn btn-outline-primary" href="{{ url_for('booking', lot_id=result.id) }}" role="button"> Book </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock body %}

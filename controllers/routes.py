@@ -1,6 +1,7 @@
 from app import app
 from flask import render_template, redirect, url_for, request, flash, session
 from controllers.database import *
+import pytz
 
 @app.route("/addlot", methods=["GET", "POST"])
 def add_lot():
@@ -152,3 +153,71 @@ def users():
     else:
         flash("You do not have permission to access this page.", "error")
         return redirect(url_for("home"))
+
+@app.route("/booking/<int:lot_id> ", methods=["GET", "POST"])
+def booking(lot_id):
+    ist = pytz.timezone('Asia/Kolkata')
+    if 'user_email' in session:
+        if request.method == "GET":
+            lot = ParkingLot.query.get(lot_id)
+            spot = ParkingSpot.query.filter_by(lot_id=lot_id, status='A').first()
+            user_id = session.get("user_id")
+            return render_template("booking.html", lot=lot, spot=spot, user_id=user_id)
+        if request.method == "POST":
+            spot_id = request.form.get("spot_id")
+            vehicle_number = request.form.get("vehicle_number")
+            user_id = session.get("user_id")
+            lot = ParkingLot.query.get(lot_id)
+
+            if not spot_id or not vehicle_number:
+                flash("Spot ID and Vehicle Number are required.", "error")
+                return redirect(url_for("booking", lot_id=lot_id))
+
+            spot = ParkingSpot.query.get(spot_id)
+            if not spot or spot.status != 'A':
+                flash("Selected parking spot is not available.", "error")
+                return redirect(url_for("booking", lot_id=lot_id))
+
+            new_reservation = Reservation(
+                spot_id=spot.id,
+                user_id=user_id,
+                vehicle_number=vehicle_number,
+                parking_timestamp=datetime.now(ist),
+                cost_per_hour= lot.price
+            )
+            spot.status = 'O'
+            db.session.add(new_reservation)
+            db.session.commit()
+            flash("Booking successful!", "success")
+            return redirect(url_for("home"))
+    else:
+        flash("You need to log in to book a parking spot.", "error")
+        return redirect(url_for("login"))
+    
+@app.route("/release/<int:spot_id>", methods=["GET", "POST"])
+def release(spot_id):
+    ist = pytz.timezone('Asia/Kolkata')
+    if 'user_email' in session:
+        spot = ParkingSpot.query.get(spot_id)
+        reservation = Reservation.query.filter_by(spot_id=spot_id, leaving_timestamp=None).first()
+        current_timestamp = datetime.now(ist)
+        if request.method == "GET":
+            if reservation:
+                total_cost = round((current_timestamp - ist.localize(reservation.parking_timestamp)).total_seconds() / 3600 * reservation.cost_per_hour,2)
+                return render_template("release.html", spot=spot, reservation=reservation, total_cost=total_cost, current_timestamp=current_timestamp)
+            else:
+                flash("No active reservation found for this spot.", "error")
+                return redirect(url_for("home"))
+        if request.method == "POST":
+            if reservation:
+                reservation.leaving_timestamp = current_timestamp
+                spot.status = 'A'
+                db.session.commit()
+                flash("Spot released successfully!", "success")
+                return redirect(url_for("home"))
+            else:
+                flash("No active reservation found for this spot.", "error")
+                return redirect(url_for("home"))
+    else:
+        flash("You need to log in to release a parking spot.", "error")
+        return redirect(url_for("login"))
