@@ -203,8 +203,9 @@ def release(spot_id):
         current_timestamp = datetime.now(ist)
         if request.method == "GET":
             if reservation:
-                total_cost = round((current_timestamp - ist.localize(reservation.parking_timestamp)).total_seconds() / 3600 * reservation.cost_per_hour,2)
-                return render_template("release.html", spot=spot, reservation=reservation, total_cost=total_cost, current_timestamp=current_timestamp)
+                duration = (current_timestamp - ist.localize(reservation.parking_timestamp)).total_seconds() / 3600
+                total_cost = round(duration * reservation.cost_per_hour,2)
+                return render_template("release.html", spot=spot, reservation=reservation, total_cost=total_cost, current_timestamp=current_timestamp, duration=duration)
             else:
                 flash("No active reservation found for this spot.", "error")
                 return redirect(url_for("home"))
@@ -221,3 +222,12 @@ def release(spot_id):
     else:
         flash("You need to log in to release a parking spot.", "error")
         return redirect(url_for("login"))
+    
+@app.route("/records")
+def records():
+    if session.get("user_email") == 'admin@gmail.com':
+        reservations = Reservation.query.all()
+        return render_template("records.html", reservations=reservations)
+    else:
+        flash("You do not have permission to access this page.", "error")
+        return redirect(url_for("home"))

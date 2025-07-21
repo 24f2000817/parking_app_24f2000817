@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Users - Vehicle Parking App{% endblock title %}
+{% block body %}
+<div>
+    <div class="card border-primary m-5">
+        <div class="card-body">
+            <h3 class="text-center" style="color:  #07567d;">Users </h3>
+            <hr style="border: 1px solid #000; width: 100%; margin: 20px auto;">
+            <table class="table table-hover" style="text-align: center;">
+                <thead >
+                <tr>
+                    <th scope="col">User ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Parking Lot</th>
+                    <th scope="col">Spot</th>
+                    <th scope="col">Duration (Hours)</th>
+                    <th scope="col">Cost</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for r in reservations %}
+                <tr>
+                    <td>{{ r.user_id }}</td>
+                    <td>{{ r.user.username }}</td>
+                    <td>{{ r.spot.lot.prime_location_name }}</td>
+                    <td>{{ r.spot.id }}</td>
+                    {% set duration = (r.leaving_timestamp - r.parking_timestamp).total_seconds() / 3600 if r.leaving_timestamp else 'N/A' %}
+                    <td>{{ "%.2f"|format(duration) if duration != 'N/A' else 'N/A' }}</td>
+                    <td>{{ "%.2f"|format(r.cost_per_hour * duration) if duration != 'N/A' else 'N/A' }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock body %}

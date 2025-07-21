@@ -15,6 +15,7 @@
                             <th scope="col">Parking Date</th>
                             <th scope="col">Parking Time</th>
                             <th scope="col">Leave Time</th>
+                            <th scope="col">Duration(Hours)</th>
                             <th scope="col"> Action</th>
                         </tr>
                     </thead>
@@ -27,6 +28,8 @@
                             <td>{{ reservation.parking_timestamp.strftime('%d %b %Y')}}</td>
                             <td>{{ reservation.parking_timestamp.strftime('%H:%M:%S') }}</td>
                             <td>{{ reservation.leaving_timestamp.strftime('%H:%M:%S') if reservation.leaving_timestamp else 'N/A' }}</td>
+                            {% set duration = (reservation.leaving_timestamp - reservation.parking_timestamp).total_seconds() / 3600 if reservation.leaving_timestamp else 'N/A' %}
+                            <td>{{ "%.2f"|format(duration) if duration != 'N/A' else 'N/A' }}</td>
                             <td>
                                 <a class="btn btn-outline-primary" href="{{ url_for('release',spot_id=reservation.spot.id) }}" role="button" > Release </a>
                             </td>
