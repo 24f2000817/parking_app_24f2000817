@@ -1,5 +1,5 @@
 {% block body %}
-    <h3 class="text-center" style="color: rgb(114, 162, 250);">Welcome to the User Dashboard</h3>
+    <h3 class="text-center" style="color: #07567d;">Welcome to the User Dashboard</h3>
     
     <div>
         <div class="card border-primary m-5">
@@ -14,6 +14,7 @@
                             <th scope="col">Vehicle Number</th>
                             <th scope="col">Parking Date</th>
                             <th scope="col">Parking Time</th>
+                            <th scope="col">Leaving Date</th>
                             <th scope="col">Leave Time</th>
                             <th scope="col">Duration(Hours)</th>
                             <th scope="col"> Action</th>
@@ -27,6 +28,7 @@
                             <td>{{ reservation.vehicle_number }}</td>
                             <td>{{ reservation.parking_timestamp.strftime('%d %b %Y')}}</td>
                             <td>{{ reservation.parking_timestamp.strftime('%H:%M:%S') }}</td>
+                            <td>{{ reservation.leaving_timestamp.strftime('%d %b %Y') if reservation.leaving_timestamp else 'N/A' }}</td>
                             <td>{{ reservation.leaving_timestamp.strftime('%H:%M:%S') if reservation.leaving_timestamp else 'N/A' }}</td>
                             {% set duration = (reservation.leaving_timestamp - reservation.parking_timestamp).total_seconds() / 3600 if reservation.leaving_timestamp else 'N/A' %}
                             <td>{{ "%.2f"|format(duration) if duration != 'N/A' else 'N/A' }}</td>
@@ -55,7 +57,7 @@
 <div>
     <div class="card border-primary m-5">
         <div class="card-body">
-            <h3 class="text-center" style="color: #07567d;">Parking History </h3>
+            <h3 class="text-center" style="color: #07567d;"> Parking Lots </h3>
             <hr style="border: 1px solid #000; width: 100%; margin: 20px auto;">
             <table class="table table-hover">
                 <thead>

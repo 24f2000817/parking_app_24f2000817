@@ -21,11 +21,11 @@
                 <input type="text" class="form-control" id="reservation_timestamp" name="reservation_timestamp" value="{{ spot.reservation.parking_timestamp }}" readonly>
             </div>
             <div class="mb-3">
-                <label for="estimated_parking_cost" class="form-label">Estimated Parking Cost</label>
-                <input type="text" class="form-control" id="estimated_parking_cost" name="estimated_parking_cost" value="({{ spot.reservation.leaving_timestamp }} - {{ spot.reservation.parking_timestamp }})*{{ spot.lot.price }}" readonly>
+                <label for="estimated_parking_cost" class="form-label">Estimated Parking Cost Till Now</label>
+                <input type="text" class="form-control" id="estimated_parking_cost" name="estimated_parking_cost" value="({{current_timestamp }} - {{ spot.reservation.parking_timestamp }})*{{ spot.lot.price }}" readonly>
             </div>
             <div class="mb-3">
-                <a class="btn btn-outline-primary m-1" href="{{url_for('view_spot', spot_id=spot.id)}}" role="Edit">Cancel</a>
+                <a class="btn btn-outline-primary m-1" href="{{url_for('view_spot', spot_id=spot.id)}}" role="View">Cancel</a>
             </div>
         </form>
     </div>

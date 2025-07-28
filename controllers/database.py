@@ -10,7 +10,7 @@ class User(db.Model):
     email = db.Column(db.String(150), unique=True, nullable=False)
     phone_number = db.Column(db.String(15), nullable=False)
 
-    reservations = db.relationship('Reservation', backref='user', lazy=True)
+    reservations = db.relationship('Reservation', backref='user', lazy=True, cascade="all, delete-orphan")
 
 class ParkingLot(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -20,14 +20,14 @@ class ParkingLot(db.Model):
     price = db.Column(db.Float, nullable=False)
     maximum_number_of_spots = db.Column(db.Integer, nullable=False)
 
-    spots = db.relationship('ParkingSpot', backref='lot', lazy=True)
+    spots = db.relationship('ParkingSpot', backref='lot', lazy=True, cascade="all, delete-orphan")
 
 class ParkingSpot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id'), nullable=False)
     status = db.Column(db.String(1), default='A')  # A=Available, O=Occupied
 
-    reservation = db.relationship('Reservation', backref='spot', uselist=False)
+    reservation = db.relationship('Reservation', backref='spot', uselist=False,cascade="all, delete-orphan")
 
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)

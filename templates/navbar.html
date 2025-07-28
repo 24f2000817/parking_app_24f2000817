@@ -1,30 +1,45 @@
-<nav class="navbar navbar-expand-lg " style="background-color: rgb(255, 208, 0);">
+<nav class="navbar navbar-expand-lg " style="background-color: rgb(8, 155, 247); min-height: 72px;">
   <div class="container-fluid">
     <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" width="40" height="40" style="border-radius: 81px; margin-right: 10px;" class="d-inline-block align-text-top">
-    <a class="navbar-brand" href="#">Parking App</a>
+    <a class="navbar-brand" href="{{ url_for('home') }}">Parking App</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarScroll">
       <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+        {% if not session.get('user_email', None) %}
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
+          <a class="nav-link active" aria-current="page" href="{{ url_for('login') }}"style="font-size: 18px;">Login</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ url_for('users') }}">Users</a>
+          <a class="nav-link active" aria-current="page" href="{{ url_for('register') }}"style="font-size: 18px;">Register</a>
+        </li>
+        {% else %}
+          {% if session.get('user_email', None) == 'admin@gmail.com' %}
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{{ url_for('users') }}"style="font-size: 18px;">Users</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ url_for('records') }}"> Parking Records</a>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ url_for('login') }}">Login</a>
+          <a class="nav-link active" aria-current="page" href="{{ url_for('records') }}"style="font-size: 18px;"> Parking Records</a>
         </li>
+          {% endif %}
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ url_for('register') }}">Register</a>
+          <a class="nav-link active" aria-current="page" href="{{ url_for('logout') }}"style="font-size: 18px;">Logout</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ url_for('logout') }}">Logout</a>
-        </li>
+        {% endif %}
+
       </ul>
+      {% if session.get('user_email', None) == 'admin@gmail.com' %}
+      <form  class="d-flex" role="search" method="GET" action="{{ url_for('adminsearch') }}">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" >
+              <select class="form-select me-2" aria-label="Default select example" name="search_type" >
+                <option selected>Select</option>
+                <option value="username">username</option>
+                <option value="spot_id">spot_id</option>
+              </select>
+            <input class="btn btn-outline-success" type="submit" value="Search">
+          </form>
+      {% endif %}
     </div>
   </div>
 </nav>

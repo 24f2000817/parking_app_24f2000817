@@ -22,19 +22,23 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    lots = ParkingLot.query.all()
-    spots = ParkingSpot.query.all()
-    search = request.args.get('search', None)
-    search_type = request.args.get('search_type',None)
-    if search_type == 'location':
-        search_results = ParkingLot.query.filter_by( address = search ).all()
-    elif search_type == 'pincode':
-        search_results = ParkingLot.query.filter_by( pin_code = search ).all()
+    if session.get("user_email", None):
+        user = User.query.filter_by(email = session.get("user_email")).first()
+        lots = ParkingLot.query.all()
+        spots = ParkingSpot.query.all()
+        search = request.args.get('search', None)
+        search_type = request.args.get('search_type',None)
+        if search_type == 'location':
+            search_results = ParkingLot.query.filter_by( address = search ).all()
+        elif search_type == 'pincode':
+            search_results = ParkingLot.query.filter_by( pin_code = search ).all()
+        else:
+            search_results = ParkingLot.query.all()
+        reservations = Reservation.query.filter_by(user_id = user.id).all()
+            
+        return render_template("home.html", lots = lots, spots = spots, search_results=search_results, reservations=reservations)
     else:
-        search_results = ParkingLot.query.all()
-    reservations = Reservation.query.all()
-        
-    return render_template("home.html", lots = lots, spots = spots, search_results=search_results, reservations=reservations)
+        return render_template("home.html")
 
 from controllers.authentication import *
 from controllers.routes import *

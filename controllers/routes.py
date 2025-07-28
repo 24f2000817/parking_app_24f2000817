@@ -85,11 +85,52 @@ def edit_lot(lot_id):
             if request.method == "GET":
                 return render_template("edit_lot.html", lot=lot)
             if request.method == "POST":
-                lot.prime_location_name = request.form.get("locationName")
-                lot.address = request.form.get("address")
-                lot.pin_code = request.form.get("pincode")
-                lot.price = float(request.form.get("price"))
-                lot.maximum_number_of_spots = int(request.form.get("maximumSpots"))
+                prime_location_name = request.form.get("locationName")
+                address = request.form.get("address")
+                pin_code = request.form.get("pincode")
+                price = float(request.form.get("price"))
+                maximum_number_of_spots = int(request.form.get("maximumSpots"))
+
+                if maximum_number_of_spots > lot.maximum_number_of_spots:
+                    for _ in range(maximum_number_of_spots - lot.maximum_number_of_spots):
+                        new_spot = ParkingSpot(lot_id=lot.id, status='A')
+                        db.session.add(new_spot)
+                
+                elif maximum_number_of_spots < ParkingSpot.query.filter_by(lot_id=lot.id, status='O').count():
+                    flash("Cannot reduce the number of spots. There are currently reserved parking spots.", "error")
+                    return redirect(url_for("edit_lot", lot_id=lot.id))
+                
+                elif maximum_number_of_spots < lot.maximum_number_of_spots:
+                    for _ in range(lot.maximum_number_of_spots - maximum_number_of_spots):
+                        delete_spot = ParkingSpot.query.filter_by(lot_id=lot.id, status='A').order_by(ParkingSpot.id.desc()).first()
+                        db.session.delete(delete_spot)
+                
+                if not prime_location_name:
+                    flash("Location name is required.", "error")
+                    return render_template("edit_lot.html", lot=lot)
+                
+                if not address:
+                    flash("Address is required.", "error")
+                    return render_template("edit_lot.html", lot=lot)
+                
+                if not pin_code:
+                    flash("Pin code is required.", "error")
+                    return render_template("edit_lot.html", lot=lot)
+                
+                if not price:
+                    flash("Price is required.", "error")
+                    return render_template("edit_lot.html", lot=lot)
+                
+                if not maximum_number_of_spots:
+                    flash("Maximum number of spots is required.", "error")
+                    return render_template("edit_lot.html", lot=lot)
+
+                lot.prime_location_name = prime_location_name
+                lot.address = address
+                lot.pin_code = pin_code
+                lot.price = price
+                lot.maximum_number_of_spots = maximum_number_of_spots
+
                 db.session.commit()
                 flash("Parking lot edited successfully!", "success")
                 return redirect(url_for("home"))
@@ -104,7 +145,12 @@ def edit_lot(lot_id):
 def delete_spot(spot_id):
     if session.get("user_email") == 'admin@gmail.com':
         spot = ParkingSpot.query.get(spot_id)
+
+        if spot.status == 'O':
+            flash("Cannot delete a reserved parking spot.", "error")
+            return redirect(url_for("home"))
         if spot:
+            spot.lot.maximum_number_of_spots -= 1
             db.session.delete(spot)
             db.session.commit()
             flash("Parking spot deleted successfully!", "success")
@@ -130,10 +176,12 @@ def view_spot(spot_id):
     
 @app.route("/view_spot_details/<int:spot_id>")
 def view_spot_details(spot_id):
+    ist = pytz.timezone('Asia/Kolkata')
     if session.get("user_email") == 'admin@gmail.com':
         spot = ParkingSpot.query.get(spot_id)
         if spot:
-            return render_template("view_spot_details.html", spot=spot)
+            current_timestamp = datetime.now(ist)
+            return render_template("view_spot_details.html", spot=spot, current_timestamp=current_timestamp)
         else:
             flash("Parking spot not found.", "error")
             return redirect(url_for("home"))
@@ -228,6 +276,20 @@ def records():
     if session.get("user_email") == 'admin@gmail.com':
         reservations = Reservation.query.all()
         return render_template("records.html", reservations=reservations)
+    else:
+        flash("You do not have permission to access this page.", "error")
+        return redirect(url_for("home"))
+    
+@app.route("/adminsearch", methods=["GET", "POST"])
+def adminsearch():
+    if session.get("user_email") == 'admin@gmail.com':
+        search = request.args.get('search', None)
+        search_type = request.args.get('search_type',None)
+        if search_type == 'username':
+            results = User.query.filter_by( username = search ).all()
+        if search_type == 'spot_id':
+            results = ParkingSpot.query.filter_by( id = search ).all()
+        return render_template("adminsearch.html", results=results, search_type=search_type)
     else:
         flash("You do not have permission to access this page.", "error")
         return redirect(url_for("home"))
