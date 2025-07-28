@@ -34,7 +34,10 @@ def home():
             search_results = ParkingLot.query.filter_by( pin_code = search ).all()
         else:
             search_results = ParkingLot.query.all()
-        reservations = Reservation.query.filter_by(user_id = user.id).all()
+        if user:
+            reservations = Reservation.query.filter_by(user_id = user.id).all()
+        else:
+            reservations = []
             
         return render_template("home.html", lots = lots, spots = spots, search_results=search_results, reservations=reservations)
     else:
