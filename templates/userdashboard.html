@@ -28,12 +28,15 @@
                             <td>{{ reservation.vehicle_number }}</td>
                             <td>{{ reservation.parking_timestamp.strftime('%d %b %Y')}}</td>
                             <td>{{ reservation.parking_timestamp.strftime('%H:%M:%S') }}</td>
-                            <td>{{ reservation.leaving_timestamp.strftime('%d %b %Y') if reservation.leaving_timestamp else 'N/A' }}</td>
-                            <td>{{ reservation.leaving_timestamp.strftime('%H:%M:%S') if reservation.leaving_timestamp else 'N/A' }}</td>
+                            <td>{{ reservation.leaving_timestamp.strftime('%d %b %Y') if reservation.leaving_timestamp else '---' }}</td>
+                            <td>{{ reservation.leaving_timestamp.strftime('%H:%M:%S') if reservation.leaving_timestamp else '---' }}</td>
                             {% set duration = (reservation.leaving_timestamp - reservation.parking_timestamp).total_seconds() / 3600 if reservation.leaving_timestamp else 'N/A' %}
-                            <td>{{ "%.2f"|format(duration) if duration != 'N/A' else 'N/A' }}</td>
+                            <td>{{ "%.2f"|format(duration) if duration != 'N/A' else '---' }}</td>
                             <td>
-                                <a class="btn btn-outline-primary" href="{{ url_for('release',spot_id=reservation.spot.id) }}" role="button" > Release </a>
+                                {% if not reservation.leaving_timestamp %}
+                                    <a class="btn btn-outline-primary" href="{{ url_for('release',spot_id=reservation.spot.id) }}" role="button" > Release </a>
+                                
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}

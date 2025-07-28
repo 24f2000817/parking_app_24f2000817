@@ -181,7 +181,9 @@ def view_spot_details(spot_id):
         spot = ParkingSpot.query.get(spot_id)
         if spot:
             current_timestamp = datetime.now(ist)
-            return render_template("view_spot_details.html", spot=spot, current_timestamp=current_timestamp)
+            reservation = Reservation.query.filter_by(spot_id=spot_id).first()
+            estimated_cost = round((current_timestamp - ist.localize(reservation.parking_timestamp)).total_seconds() / 3600 * reservation.cost_per_hour,2)
+            return render_template("view_spot_details.html", spot=spot, current_timestamp=current_timestamp, estimated_cost=estimated_cost)
         else:
             flash("Parking spot not found.", "error")
             return redirect(url_for("home"))

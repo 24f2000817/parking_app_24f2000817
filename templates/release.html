@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Edit Lot - Vehicle Parking App{% endblock title %}
 {% block body %}
-    <div><h1 class = "text-center" style="color: #07567d;">Edit Lot</h1></div>
+    <div><h1 class = "text-center" style="color: #07567d;">Release spot</h1></div>
     <div class="container-fluid row justify-content-center">
         <form class="col-5" action="{{url_for('release', spot_id=spot.id)}}" method="POST">
             <div class="mb-3">
@@ -26,7 +26,7 @@
             </div>
             <div>
                 <button type="submit" class="btn btn-primary">Release</button>
-                <button type="reset" class="btn btn-secondary">Cancel</button>
+                <a class="btn btn-outline-primary m-1" href="{{url_for('home')}}" role="Edit">Cancel</a>
             </div>
         </form>
     </div>
