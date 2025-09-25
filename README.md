@@ -13,6 +13,3 @@
 | **HTML/CSS/Bootstrap**  | UI structure and styling for a responsive and clean frontend            |
 | **pytz, datetime**      | Handling and formatting timezone-aware timestamps                       |
 
-
-### Video link
-https://drive.google.com/file/d/1_E1yT4FMZPIuX3bICIsiLf5PPzwXrOYY/view?usp=drive_link
